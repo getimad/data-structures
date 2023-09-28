@@ -1,6 +1,6 @@
-﻿namespace DataStructures
+﻿namespace DataStructures.Classes
 {
-    internal class QueueDemo
+    internal class StackDemo
     {
         private class Node
         {
@@ -13,57 +13,56 @@
             }
         }
 
-        private Node _head;
-        private Node _tail;
+        private Node _top;
 
         /// <summary>
-        /// Add the number to the end of the queue.
+        /// Push the number to the top of the stack.
         /// </summary>
         /// <param name="num"></param>
-        public void Enqueue(int num)
+        public void Push(int num)
         {
             var node = new Node(num);
 
-            if (_head == null)
+            if (_top == null)
             {
-                _head = _tail = node;
+                _top = node;
             }
 
             else
             {
-                _tail.next = node;
-                _tail = node;
+                node.next = _top;
+                _top = node;
             }
         }
 
         /// <summary>
-        /// Removes the number at the head of the queue and returns it.
+        /// Pop the last number from the stack.
         /// </summary>
         /// <returns></returns>
-        public int Dequeue()
+        public int Pop()
         {
-            var num = _head.value;
-            _head = _head.next;
+            var num = _top.value;
+            _top = _top.next;
 
             return num;
         }
 
         /// <summary>
-        /// Returns the the head of the queue.
+        /// Return the top number of the stack.
         /// </summary>
         /// <returns></returns>
         public int Peek()
         {
-            return _tail.value;
+            return _top.value;
         }
-        
+
         /// <summary>
-        /// Check if the queue is empty or not.
+        /// Check if the stack is empty.
         /// </summary>
         /// <returns></returns>
         public bool IsEmpty()
         {
-            return _head == null;
+            return _top == null;
         }
     }
 }

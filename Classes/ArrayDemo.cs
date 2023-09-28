@@ -1,4 +1,4 @@
-﻿namespace DataStructures
+﻿namespace DataStructures.Classes
 {
     internal class ArrayDemo
     {

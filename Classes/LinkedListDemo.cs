@@ -1,4 +1,4 @@
-﻿namespace DataStructures
+﻿namespace DataStructures.Classes
 {
     internal class LinkedListDemo
     {
@@ -44,7 +44,7 @@
         {
             var node = new Node(num);
 
-            if ( _first == null)
+            if (_first == null)
             {
                 _first = _last = node;
             }

@@ -1,6 +1,6 @@
-﻿namespace DataStructures
+﻿namespace DataStructures.Classes
 {
-    internal class StackDemo
+    internal class QueueDemo
     {
         private class Node
         {
@@ -13,56 +13,57 @@
             }
         }
 
-        private Node _top;
+        private Node _head;
+        private Node _tail;
 
         /// <summary>
-        /// Push the number to the top of the stack.
+        /// Add the number to the end of the queue.
         /// </summary>
         /// <param name="num"></param>
-        public void Push(int num)
+        public void Enqueue(int num)
         {
             var node = new Node(num);
 
-            if (_top == null)
+            if (_head == null)
             {
-                _top = node;
+                _head = _tail = node;
             }
 
             else
             {
-                node.next = _top;
-                _top = node;
+                _tail.next = node;
+                _tail = node;
             }
         }
 
         /// <summary>
-        /// Pop the last number from the stack.
+        /// Removes the number at the head of the queue and returns it.
         /// </summary>
         /// <returns></returns>
-        public int Pop()
+        public int Dequeue()
         {
-            var num = _top.value;
-            _top = _top.next;
+            var num = _head.value;
+            _head = _head.next;
 
             return num;
         }
 
         /// <summary>
-        /// Return the top number of the stack.
+        /// Returns the the head of the queue.
         /// </summary>
         /// <returns></returns>
         public int Peek()
         {
-            return _top.value;
+            return _tail.value;
         }
 
         /// <summary>
-        /// Check if the stack is empty.
+        /// Check if the queue is empty or not.
         /// </summary>
         /// <returns></returns>
         public bool IsEmpty()
         {
-            return _top == null;
+            return _head == null;
         }
     }
 }

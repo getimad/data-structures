@@ -1,4 +1,4 @@
-﻿namespace DataStructures
+﻿namespace DataStructures.Classes
 {
     internal class HashTableDemo
     {
@@ -76,7 +76,7 @@
 
             var bucket = _entries[index];
 
-            foreach(var entry in bucket)
+            foreach (var entry in bucket)
             {
                 if (entry.key == key)
                 {
