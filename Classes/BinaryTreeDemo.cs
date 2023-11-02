@@ -128,79 +128,43 @@
             return modes.ToArray();
         }
 
-        public int[] TraversePerOrder()
+        public IEnumerable<int> TraversePerOrder()
         {
-            var arr = new int[Count];
+            yield return value;
 
-            var index = 0;
+            if (left is not null)
+                foreach (var i in left.TraverseInOrder())
+                    yield return i;
 
-            void CollectData(BinaryTreeDemo root)
-            {
-                arr[index++] = root.value;
-
-                if (root is null)
-                    return;
-
-                if (root.left is not null)
-                    CollectData(root.left);
-
-                if (root.right is not null)
-                    CollectData(root.right);
-            }
-
-            CollectData(this);
-
-            return arr;
+            if (right is not null)
+                foreach (var i in right.TraverseInOrder())
+                    yield return i;
         }
 
-        public int[] TraverseInOrder()
+        public IEnumerable<int> TraverseInOrder()
         {
-            var arr = new int[Count];
+            if (left is not null)
+                foreach (var i in left.TraverseInOrder())
+                    yield return i;
 
-            var index = 0;
+            yield return value;
 
-            void CollectData(BinaryTreeDemo root)
-            {
-                if (root is null)
-                    return;
-
-                if (root.left is not null)
-                    CollectData(root.left);
-
-                arr[index++] = root.value;
-
-                if (root.right is not null)
-                    CollectData(root.right);
-            }
-
-            CollectData(this);
-
-            return arr;
+            if (right is not null)
+                foreach (var i in right.TraverseInOrder())
+                    yield return i;
         }
 
-        public int[] TraversePostOrder()
+        public IEnumerable<int> TraversePostOrder()
         {
-            var arr = new int[Count];
+            if (left is not null)
+                foreach (var i in left.TraversePostOrder())
+                    yield return i;
 
-            var index = 0;
+            if (right is not null)
+                foreach (var i in right.TraversePostOrder())
+                    yield return i;
 
-            void CollectData(BinaryTreeDemo root)
-            {
-                if (root is null)
-                    return;
-
-                if (root.left is not null)
-                    CollectData(root.left);
-
-                if (root.right is not null)
-                    CollectData(root.right);
-
-                arr[index++] = root.value;
-            }
-
-            CollectData(this);
-
-            return arr;
+            yield return value;
         }
     }
 }
