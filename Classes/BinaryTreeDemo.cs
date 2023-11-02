@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DataStructures.Classes
+﻿namespace DataStructures.Classes
 {
     internal class BinaryTreeDemo
     {
@@ -11,12 +8,16 @@ namespace DataStructures.Classes
          */
 
         public int value;
-        public BinaryTreeDemo left;
-        public BinaryTreeDemo right;
+        public BinaryTreeDemo? left;
+        public BinaryTreeDemo? right;
+
+        public int Count { get; private set; }
 
         public BinaryTreeDemo(int value)
         {
             this.value = value;
+
+            Count = 1;
         }
 
         public void Insert(int num)
@@ -46,6 +47,8 @@ namespace DataStructures.Classes
                     right.Insert(num);
                 }
             }
+
+            Count++;
         }
 
         public bool Contains(int num)
@@ -82,7 +85,6 @@ namespace DataStructures.Classes
             }
         }
 
-        
         public int[] FindModes() // Solved on LeetCode 501
         {
             var dic = new Dictionary<int, int>();
@@ -124,6 +126,81 @@ namespace DataStructures.Classes
             }
 
             return modes.ToArray();
+        }
+
+        public int[] TraversePerOrder()
+        {
+            var arr = new int[Count];
+
+            var index = 0;
+
+            void CollectData(BinaryTreeDemo root)
+            {
+                arr[index++] = root.value;
+
+                if (root is null)
+                    return;
+
+                if (root.left is not null)
+                    CollectData(root.left);
+
+                if (root.right is not null)
+                    CollectData(root.right);
+            }
+
+            CollectData(this);
+
+            return arr;
+        }
+
+        public int[] TraverseInOrder()
+        {
+            var arr = new int[Count];
+
+            var index = 0;
+
+            void CollectData(BinaryTreeDemo root)
+            {
+                if (root is null)
+                    return;
+
+                if (root.left is not null)
+                    CollectData(root.left);
+
+                arr[index++] = root.value;
+
+                if (root.right is not null)
+                    CollectData(root.right);
+            }
+
+            CollectData(this);
+
+            return arr;
+        }
+
+        public int[] TraversePostOrder()
+        {
+            var arr = new int[Count];
+
+            var index = 0;
+
+            void CollectData(BinaryTreeDemo root)
+            {
+                if (root is null)
+                    return;
+
+                if (root.left is not null)
+                    CollectData(root.left);
+
+                if (root.right is not null)
+                    CollectData(root.right);
+
+                arr[index++] = root.value;
+            }
+
+            CollectData(this);
+
+            return arr;
         }
     }
 }
