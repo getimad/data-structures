@@ -1,19 +1,19 @@
 ﻿namespace DataStructures.Classes
 {
-    internal class BinaryTreeDemo
+    internal class BinarySearchTreeDemo
     {
         /**
-         * Binary Tree does not require a separate Node class.
-         * The BinaryTree class itself represents the nodes of the tree.
+         * Binary Search Tree does not require a separate Node class.
+         * The BinarySearchTreeDemo class itself represents the nodes of the tree.
          */
 
         public int value;
-        public BinaryTreeDemo? left;
-        public BinaryTreeDemo? right;
+        public BinarySearchTreeDemo? left;
+        public BinarySearchTreeDemo? right;
 
         public int Count { get; private set; }
 
-        public BinaryTreeDemo(int value)
+        public BinarySearchTreeDemo(int value)
         {
             this.value = value;
 
@@ -26,7 +26,7 @@
             {
                 if (left is null)
                 {
-                    left = new BinaryTreeDemo(num);
+                    left = new BinarySearchTreeDemo(num);
                 }
 
                 else
@@ -39,7 +39,7 @@
             {
                 if (right is null)
                 {
-                    right = new BinaryTreeDemo(num);
+                    right = new BinarySearchTreeDemo(num);
                 }
 
                 else
@@ -85,11 +85,65 @@
             }
         }
 
+        public int Sum()
+        {
+            var sum = value;
+
+            if (left is not null)
+                sum += left.Sum();
+
+            if (right is not null)
+                sum += right.Sum();
+
+            return sum;
+        }
+
+        public int Min()
+        {
+            if (left is null)
+                return value;
+
+            return left.Min();
+        }
+
+        public bool Equals(BinarySearchTreeDemo? tree)
+        {
+            if (Count !=  tree?.Count)
+                return false;
+
+            if (value != tree.value)
+                return false;
+
+            if (left is not null)
+                return left.Equals(tree.left);
+
+            if (left is not null)
+                return left.Equals(tree.left);
+
+            return true;
+        }
+
+        public int Height()
+        {
+            static int Calculate(BinarySearchTreeDemo? root)
+            {
+                if (root is null)
+                    return -1;
+
+                if (root.right is null && root.left is null)
+                    return 0;
+
+                return 1 + Math.Max(Calculate(root.left), Calculate(root.right));
+            }
+
+            return Calculate(this);
+        }
+
         public int[] FindModes() // Solved on LeetCode 501
         {
             var dic = new Dictionary<int, int>();
 
-            void CollectData(BinaryTreeDemo root)
+            void CollectData(BinarySearchTreeDemo root)
             {
                 if (!dic.TryAdd(root.value, 1))
                 {
