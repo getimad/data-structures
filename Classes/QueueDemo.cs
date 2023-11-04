@@ -1,69 +1,67 @@
-﻿namespace DataStructures.Classes
+﻿using DataStructures.Classes.Helpers;
+
+namespace DataStructures.Classes
 {
     internal class QueueDemo
     {
-        private class Node
+        public Node? Front { get; private set; }
+        public Node? Rear { get; private set; }
+
+        public void Enqueue(int val)
         {
-            public int value;
-            public Node next;
+            // Add new node to the rear of the Queue.
 
-            public Node(int value)
-            {
-                this.value = value;
-            }
-        }
+            var node = new Node(val);
 
-        private Node _head;
-        private Node _tail;
-
-        /// <summary>
-        /// Add the number to the end of the queue.
-        /// </summary>
-        /// <param name="num"></param>
-        public void Enqueue(int num)
-        {
-            var node = new Node(num);
-
-            if (_head == null)
-            {
-                _head = _tail = node;
-            }
+            if (Front is null || Rear is null)
+                Front = Rear = node;
 
             else
             {
-                _tail.next = node;
-                _tail = node;
+                Rear.Next = node;
+                Rear = node;
             }
         }
 
-        /// <summary>
-        /// Removes the number at the head of the queue and returns it.
-        /// </summary>
-        /// <returns></returns>
         public int Dequeue()
         {
-            var num = _head.value;
-            _head = _head.next;
+            // Remove the front node of the Queue.
 
-            return num;
+            if (Front is null)
+                throw new NullReferenceException("The Queue is empty.");
+
+            var value = Front.Value;
+            Front = Front.Next;
+
+            return value;
         }
 
-        /// <summary>
-        /// Returns the the head of the queue.
-        /// </summary>
-        /// <returns></returns>
         public int Peek()
         {
-            return _tail.value;
+            if (Front is null)
+                throw new NullReferenceException("The Queue is empty.");
+
+            return Front.Value;
         }
 
-        /// <summary>
-        /// Check if the queue is empty or not.
-        /// </summary>
-        /// <returns></returns>
         public bool IsEmpty()
+            => Front == null;
+
+        public void Clear()
+            => Front = null;
+
+        public int[] ConvertToArray()
         {
-            return _head == null;
+            var list = new List<int>();
+            var current = Front;
+
+            while (current is not null)
+            {
+                list.Add(current.Value);
+                current = current.Next;
+            }
+
+            return list.ToArray();
         }
     }
 }

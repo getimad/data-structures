@@ -6,8 +6,8 @@ namespace DataStructures.Classes
     {
         public Node? Top { get; private set; }
 
-        public void Push(int num)
-            => Top = new Node(num, Top);
+        public void Push(int val)
+            => Top = new Node(val, Top);
 
         public int Pop()
         {
