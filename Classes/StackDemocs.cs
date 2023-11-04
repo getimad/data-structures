@@ -1,68 +1,52 @@
-﻿namespace DataStructures.Classes
+﻿using DataStructures.Classes.Helpers;
+
+namespace DataStructures.Classes
 {
     internal class StackDemo
     {
-        private class Node
-        {
-            public int value;
-            public Node next;
+        public Node? Top { get; private set; }
 
-            public Node(int value)
-            {
-                this.value = value;
-            }
-        }
-
-        private Node _top;
-
-        /// <summary>
-        /// Push the number to the top of the stack.
-        /// </summary>
-        /// <param name="num"></param>
         public void Push(int num)
-        {
-            var node = new Node(num);
+            => Top = new Node(num, Top);
 
-            if (_top == null)
-            {
-                _top = node;
-            }
-
-            else
-            {
-                node.next = _top;
-                _top = node;
-            }
-        }
-
-        /// <summary>
-        /// Pop the last number from the stack.
-        /// </summary>
-        /// <returns></returns>
         public int Pop()
         {
-            var num = _top.value;
-            _top = _top.next;
+            if (Top is null)
+                throw new InvalidOperationException("The Stack is empty.");
 
-            return num;
+            var value = Top.Value;
+
+            Top = Top.Next;
+
+            return value;
         }
 
-        /// <summary>
-        /// Return the top number of the stack.
-        /// </summary>
-        /// <returns></returns>
         public int Peek()
         {
-            return _top.value;
+            if (Top is null)
+                throw new InvalidOperationException("The Stack is empty.");
+
+            return Top.Value;
         }
 
-        /// <summary>
-        /// Check if the stack is empty.
-        /// </summary>
-        /// <returns></returns>
         public bool IsEmpty()
+            => Top is null;
+
+        public void Clear()
+            => Top = null;
+
+        public int[] ConvertToArray()
         {
-            return _top == null;
+            var list = new List<int>();
+            var current = Top;
+
+            while (current is not null)
+            {
+                list.Add(current.Value);
+                current = current.Next;
+            }
+
+            return list.ToArray();
         }
     }
 }
