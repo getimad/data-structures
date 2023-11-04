@@ -1,99 +1,75 @@
-﻿namespace DataStructures.Classes
+﻿using DataStructures.Classes.Helpers;
+
+namespace DataStructures.Classes
 {
     internal class HashTableDemo
     {
-        private class Entry
-        {
-            public int key;
-            public string value;
+        public int Size { get; private set; }
+        private List<Pair>[] Data { get; set; }
 
-            public Entry(int key, string value)
-            {
-                this.key = key;
-                this.value = value;
-            }
+        public HashTableDemo(int size = 64)
+        {
+            Size = size;
+            Data = new List<Pair>[size];
         }
 
-        private LinkedList<Entry>[] _entries = new LinkedList<Entry>[5];
+        private int GetBucketIndex(int key)
+            // Get Hash of the key.
+            => key % Size;
 
-        /// <summary>
-        /// Add an entry to the hash table if not exist otherwize update the existing entry.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void Put(int key, string value)
+        public void Put(int key, int val)
         {
-            var index = Hash(key);
+            var pair = new Pair(key, val);
 
-            if (_entries[index] == null)
+            var index = GetBucketIndex(key);
+            Data[index] ??= new List<Pair>();
+
+            for (var i = 0; i < Data[index].Count; i++)
             {
-                _entries[index] = new LinkedList<Entry>();
-            }
-
-            var bucket = _entries[index];
-
-            foreach (var entry in bucket)
-            {
-                if (entry.key == key)
+                if (Data[index][i].Equals(key))
                 {
-                    entry.value = value;
+                    Data[index][i] = pair;
                     return;
                 }
             }
 
-            bucket.AddLast(new Entry(key, value));
+            Data[index].Add(pair);
         }
 
-        /// <summary>
-        /// Returns the value by its key from hash table.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public string Get(int key)
+        public int Get(int key)
         {
-            var index = Hash(key);
+            var index = GetBucketIndex(key);
+            Data[index] ??= new List<Pair>();
 
-            var bucket = _entries[index];
-
-            foreach (var entry in bucket)
+            for (var i = 0; i < Data[index].Count; i++)
             {
-                if (entry.key == key)
-                {
-                    return entry.value;
-                }
+                if (Data[index][i].Key.Equals(key))
+                    return Data[index][i].Value;
             }
 
-            return null;
+            return -1;
         }
 
-        /// <summary>
-        /// Remove an entry by its key from hash table.
-        /// </summary>
-        /// <param name="key"></param>
+        public bool Contains(int key)
+            => Get(key) != -1;
+
         public void Remove(int key)
         {
-            var index = Hash(key);
+            if (!Contains(key))
+                throw new KeyNotFoundException("The key is not exist in the Hash Table.");
 
-            var bucket = _entries[index];
+            var index = GetBucketIndex(key);
 
-            foreach (var entry in bucket)
+            Data[index] ??= new List<Pair>();
+
+            for (var i = 0; i < Data[index].Count; i++)
             {
-                if (entry.key == key)
+                if (Data[index][i].Key.Equals(key))
                 {
-                    bucket.Remove(entry);
-                    return;
+                    Data[index].RemoveAt(i);
+                    break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Returns hash of a number.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        private int Hash(int key)
-        {
-            return key % _entries.Length;
         }
     }
 }
