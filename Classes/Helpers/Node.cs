@@ -1,4 +1,4 @@
-﻿namespace DataStructures
+﻿namespace DataStructures.Classes.Helpers
 {
     public class Node
     {

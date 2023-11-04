@@ -1,264 +1,156 @@
-﻿namespace DataStructures.Classes
+﻿using DataStructures.Classes.Helpers;
+
+namespace DataStructures.Classes
 {
     internal class LinkedListDemo
     {
-        private class Node
+        public Node? Head { get; private set; }
+        public Node? Tail { get; private set; }
+
+        public void AddFirst(int val)
         {
-            public int value;
-            public Node next;
+            var node = new Node(val);
 
-            public Node(int value)
-            {
-                this.value = value;
-            }
-        }
-
-        private Node _first;
-        private Node _last;
-
-        /// <summary>
-        /// Add the number at the end of the linked list.
-        /// </summary>
-        /// <param name="num"></param>
-        public void AddLast(int num)
-        {
-            var node = new Node(num);
-
-            if (_first == null)
-            {
-                _first = _last = node;
-            }
+            if (Head is null)
+                Head = Tail = node;
 
             else
             {
-                _last.next = node;
-                _last = node;
+                node.Next = Head;
+                Head = node;
             }
         }
 
-        /// <summary>
-        /// Add the number at the first of the linked list.
-        /// </summary>
-        /// <param name="num"></param>
-        public void AddFirst(int num)
+        public void AddLast(int val)
         {
-            var node = new Node(num);
+            var node = new Node(val);
 
-            if (_first == null)
-            {
-                _first = _last = node;
-            }
+            if (Head is null || Tail is null)
+                Head = Tail = node;
 
             else
             {
-                node.next = _first;
-                _first = node;
+                Tail.Next = node;
+                Tail = node;
             }
         }
 
-        /// <summary>
-        /// Index of the num in linked list.
-        /// </summary>
-        /// <param name="num"></param>
-        /// <returns></returns>
-        public int IndexOf(int num)
+        public int RemoveFirst()
         {
-            var count = 0;
+            if (Head is null)
+                throw new NullReferenceException("The Linked List is empty.");
 
-            var node = _first;
+            var value = Head.Value;
 
-            while (true)
-            {
-                if (node.next == null)
-                {
-                    return -1;
-                }
+            if (Head.Next is null)
+                Head = Tail = null;
+            else
+                Head = Head.Next;
 
-                if (node.value == num)
-                {
-                    return count;
-                }
-
-                node = node.next;
-                count++;
-            }
+            return value;
         }
 
-        /// <summary>
-        /// Check if the linked list contains the number.
-        /// </summary>
-        /// <param name="num"></param>
-        /// <returns></returns>
-        public bool Contains(int num)
+        public int RemoveLast()
         {
-            var node = _first;
+            if (Head is null || Tail is null)
+                throw new NullReferenceException("The Linked List is empty.");
 
-            while (true)
+            var value = Tail.Value;
+
+            if (Head.Next is null)
+                Head = Tail = null;
+            else
             {
-                if (node == null)
-                {
-                    return false;
-                }
+                var current = Head;
 
-                if (node.value == num)
+                while (current is not null)
                 {
-                    return true;
-                }
+                    if (current.Next.Equals(Tail))
+                    {
+                        Tail = current;
+                        Tail.Next = null;
+                    }
 
-                node = node.next;
+                    current = current.Next;
+                }
             }
+
+            return value;
         }
 
-        /// <summary>
-        /// Remove the first number in the linked list.
-        /// </summary>
-        /// <exception cref="NullReferenceException"></exception>
-        public void RemoveFirst()
-        {
-            if (_first == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            if (_first.next == null)
-            {
-                _first = _last = null;
-                return;
-            }
-
-            _first = _first.next;
-        }
-
-        /// <summary>
-        /// Remove the last number in the linked list.
-        /// </summary>
-        /// <exception cref="NullReferenceException"></exception>
-        public void RemoveLast()
-        {
-            if (_first == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            if (_first.next == null)
-            {
-                _first = _last = null;
-                return;
-            }
-
-            var node = _first;
-            var next = _first.next;
-
-            while (true)
-            {
-                if (next.next == null)
-                {
-                    _last = node;
-                    _last.next = null;
-                    return;
-                }
-
-                node = node.next;
-                next = next.next;
-            }
-        }
-
-        /// <summary>
-        /// Reverse the linked list.
-        /// </summary>
-        public void Reverse()
-        {
-            var preNode = _first;
-            var curNode = _first.next;
-
-            while (true)
-            {
-                if (curNode == null)
-                {
-                    break;
-                }
-
-                var nexNode = curNode.next;
-                curNode.next = preNode;
-                preNode = curNode;
-                curNode = nexNode;
-            }
-
-            _last = _first;
-            _last.next = null;
-
-            _first = preNode;
-        }
-
-        /// <summary>
-        /// Returns the size of the linked list.
-        /// </summary>
-        /// <returns></returns>
         public int Size()
         {
-            var count = 0;
-            var node = _first;
+            var size = 0;
+            var current = Head;
 
-            while (true)
+            if (current is null)
+                return size;
+
+            while (current is not null)
             {
-                if (node == null)
-                {
-                    return count;
-                }
-
-                node = node.next;
-                count++;
+                size++;
+                current = current.Next;
             }
+
+            return size;
         }
 
-        /// <summary>
-        /// Get the Kth from the end of the list.
-        /// </summary>
-        /// <param name="kth"></param>
-        /// <returns></returns>
-        public int GetKthFromTheEnd(int kth)
+        public int IndexOf(int val)
         {
-            var x = _first;
-            var y = _first;
-
-            for (var i = 0; i < kth - 1; i++)
-            {
-                x = x.next;
-            }
-
-            while (true)
-            {
-                if (x == _last)
-                {
-                    return y.value;
-                }
-
-                x = x.next;
-                y = y.next;
-            }
-        }
-
-        /// <summary>
-        /// Return converted linked list to array.
-        /// </summary>
-        /// <returns></returns>
-        public int[] ConverToArray()
-        {
-            var array = new int[Size()];
             var index = 0;
 
-            var node = _first;
+            var current = Head;
 
-            while (true)
+            while (current is not null)
             {
-                if (node == null)
-                {
-                    return array;
-                }
+                if (current.Value == val)
+                    return index;
 
-                array[index++] = node.value;
-                node = node.next;
+                current = current.Next;
+                index++;
             }
+
+            return -1;
+        }
+
+        public bool Contains(int val)
+            => IndexOf(val) != -1;
+
+        public void Reverse()
+        {
+            if (Head is null)
+                throw new NullReferenceException("The Linked List is empty.");
+
+            var preNode = Head;
+            var curNode = Head.Next;
+
+            while (curNode is not null)
+            {
+                var nextNode = curNode.Next;
+                curNode.Next = preNode;
+                preNode = curNode;
+                curNode = nextNode;
+            }
+
+            Tail = Head;
+            Tail.Next = null;
+
+            Head = preNode;
+        }
+
+        public int[] ConverToArray()
+        {
+            var list = new List<int>();
+
+            var current = Head;
+
+            while (current is not null)
+            {
+                list.Add(current.Value);
+                current = current.Next;
+            }
+
+            return list.ToArray();
         }
     }
 }
