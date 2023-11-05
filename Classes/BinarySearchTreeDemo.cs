@@ -1,224 +1,230 @@
-﻿namespace DataStructures.Classes
+﻿using DataStructures.Classes.Helpers;
+
+namespace DataStructures.Classes
 {
     internal class BinarySearchTreeDemo
     {
-        /**
-         * Binary Search Tree does not require a separate Node class.
-         * The BinarySearchTreeDemo class itself represents the nodes of the tree.
-         */
+        public Tree? Root { get; private set; }
 
-        public int value;
-        public BinarySearchTreeDemo? left;
-        public BinarySearchTreeDemo? right;
-
-        public int Count { get; private set; }
-
-        public BinarySearchTreeDemo(int value)
+        public void Add(int val)
         {
-            this.value = value;
+            if (Root is null)
+                Root = new Tree(val);
 
-            Count = 1;
+            else
+                Add(Root, val);
         }
 
-        public void Insert(int num)
+        private void Add(Tree current, int val)
         {
-            if (value > num)
+            if (val <= current.Value)
             {
-                if (left is null)
-                {
-                    left = new BinarySearchTreeDemo(num);
-                }
+                if (current.Left is null)
+                    current.Left = new Tree(val);
 
                 else
-                {
-                    left.Insert(num);
-                }
+                    Add(current.Left, val);
             }
 
             else
             {
-                if (right is null)
-                {
-                    right = new BinarySearchTreeDemo(num);
-                }
+                if (current.Right is null)
+                    current.Right = new Tree(val);
 
                 else
-                {
-                    right.Insert(num);
-                }
+                    Add(current.Right, val);
             }
-
-            Count++;
         }
 
-        public bool Contains(int num)
+        public bool Contains(int val)
         {
-            if (value == num)
-            {
-                return true;
-            }
+            if (Root is null)
+                throw new NullReferenceException("The Binary Search Tree is empty.");
 
-            if (value > num)
+            return Contains(Root, val);
+        }
+        
+        private bool Contains(Tree current, int val)
+        {
+            if (val < current.Value)
             {
-                if (left is null)
-                {
+                if (current.Left is null)
                     return false;
-                }
 
-                else
-                {
-                    return left.Contains(num);
-                }
+                return Contains(current.Left, val);
             }
 
-            else
+            if (val > current.Value)
             {
-                if (right is null)
-                {
+                if (current.Right is null)
                     return false;
-                }
 
-                else
-                {
-                    return right.Contains(num);
-                }
+                return Contains(current.Right, val);
             }
+
+            return true;
         }
 
         public int Sum()
         {
-            var sum = value;
+            if (Root is null)
+                throw new NullReferenceException("The Binary Search Tree is empty.");
 
-            if (left is not null)
-                sum += left.Sum();
+            return Sum(Root);
+        }
+            
 
-            if (right is not null)
-                sum += right.Sum();
+        private int Sum(Tree current)
+        {
+            if (current is null)
+                return 0;
 
-            return sum;
+            if (current.Left is null || current.Right is null)
+                return 0;
+
+            return current.Value + Sum(current.Right) + Sum(current.Left);
         }
 
         public int Min()
         {
-            if (left is null)
-                return value;
+            if (Root is null)
+                throw new NullReferenceException("The Binary Search Tree is empty.");
 
-            return left.Min();
+            return Min(Root);
         }
 
-        public bool Equals(BinarySearchTreeDemo? tree)
+        private int Min(Tree current)
         {
-            if (Count !=  tree?.Count)
+            if (current.Left is null)
+                return current.Value;
+
+            return Min(current.Left);
+        }
+
+        public int Max()
+        {
+            if (Root is null)
+                throw new NullReferenceException("The Binary Search Tree is empty.");
+
+            return Max(Root);
+        }
+
+        private int Max(Tree current)
+        {
+            if (current.Right is null)
+                return current.Value;
+
+            return Max(current.Right);
+        }
+
+        public bool Equals(BinarySearchTreeDemo other)
+        {
+            if (other is null)
+                throw new ArgumentNullException(nameof(other));
+
+            if (Root is null && other.Root is null)
+                return true;
+
+            if (Root is null || other.Root is null)
                 return false;
 
-            if (value != tree.value)
+            return Equals(Root, other.Root);
+        }
+
+        private bool Equals(Tree current, Tree other)
+        {
+            if (current.Value != other.Value)
                 return false;
 
-            if (left is not null)
-                return left.Equals(tree.left);
+            if (current.Left is null ^ other.Left is null)
+                return false;
 
-            if (left is not null)
-                return left.Equals(tree.left);
+            if (current.Left is not null && other.Left is not null)
+                return Equals(current.Left, other.Left);
+
+            if (current.Right is not null && other.Right is not null)
+                return Equals(current.Right, other.Right);
 
             return true;
         }
 
         public int Height()
         {
-            static int Calculate(BinarySearchTreeDemo? root)
-            {
-                if (root is null)
-                    return -1;
+            if (Root is null)
+                return -1;
 
-                if (root.right is null && root.left is null)
-                    return 0;
-
-                return 1 + Math.Max(Calculate(root.left), Calculate(root.right));
-            }
-
-            return Calculate(this);
+            return Height(Root);
         }
 
-        public int[] FindModes() // Solved on LeetCode 501
+        private int Height(Tree current)
         {
-            var dic = new Dictionary<int, int>();
+            if (current.Left is null || current.Right is null)
+                return 1;
 
-            void CollectData(BinarySearchTreeDemo root)
-            {
-                if (!dic.TryAdd(root.value, 1))
-                {
-                    dic[root.value]++;
-                }
-
-                if (root.left is null && root.right is null)
-                {
-                    return;
-                }
-
-                if (root.left is not null)
-                {
-                    CollectData(root.left);
-                }
-
-                if (root.right is not null)
-                {
-                    CollectData(root.right);
-                }
-            }
-
-            CollectData(this);
-
-            var max = dic.Max(x => x.Value);
-            var modes = new List<int>();
-            
-            foreach (var item in dic)
-            {
-                if (item.Value.Equals(max))
-                {
-                    modes.Add(item.Key);
-                }
-            }
-
-            return modes.ToArray();
+            return 1 + Math.Max(Height(current.Left), Height(current.Right));
         }
 
         public IEnumerable<int> TraversePerOrder()
         {
-            yield return value;
+            if (Root is null)
+                throw new NullReferenceException("The Binary Search Tree is empty.");
 
-            if (left is not null)
-                foreach (var i in left.TraverseInOrder())
+            return TraversePerOrder(Root);
+        }
+
+        private IEnumerable<int> TraversePerOrder(Tree current)
+        {
+            yield return current.Value;
+
+            if (current.Left is not null)
+                foreach (var i in TraversePerOrder(current.Left))
                     yield return i;
 
-            if (right is not null)
-                foreach (var i in right.TraverseInOrder())
+            if (current.Right is not null)
+                foreach (var i in TraversePerOrder(current.Right))
                     yield return i;
         }
 
         public IEnumerable<int> TraverseInOrder()
         {
-            if (left is not null)
-                foreach (var i in left.TraverseInOrder())
+            if (Root is null)
+                throw new NullReferenceException("The Binary Search Tree is empty.");
+
+            return TraverseInOrder(Root);
+        }
+
+        private IEnumerable<int> TraverseInOrder(Tree current)
+        {
+            if (current.Left is not null)
+                foreach (var i in TraverseInOrder(current.Left))
                     yield return i;
 
-            yield return value;
+            yield return current.Value;
 
-            if (right is not null)
-                foreach (var i in right.TraverseInOrder())
+            if (current.Right is not null)
+                foreach (var i in TraverseInOrder(current.Right))
                     yield return i;
         }
 
         public IEnumerable<int> TraversePostOrder()
         {
-            if (left is not null)
-                foreach (var i in left.TraversePostOrder())
+            if (Root is null)
+                throw new NullReferenceException("The Binary Search Tree is empty.");
+
+            return TraversePostOrder(Root);
+        }
+
+        private IEnumerable<int> TraversePostOrder(Tree current)
+        {
+            if (current.Left is not null)
+                foreach (var i in TraversePostOrder(current.Left))
                     yield return i;
 
-            if (right is not null)
-                foreach (var i in right.TraversePostOrder())
+            if (current.Right is not null)
+                foreach (var i in TraversePostOrder(current.Right))
                     yield return i;
 
-            yield return value;
+            yield return current.Value;
         }
     }
 }
